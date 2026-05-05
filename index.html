@@ -37,7 +37,7 @@
       50% { transform: scale(1.2); opacity: 0.8; }
     }
 
-  .container {
+    .container {
       width: 100%;
       max-width: 400px;
       background: rgba(255, 255, 255, 0.08);
@@ -56,18 +56,18 @@
       margin-bottom: 8px;
       font-weight: 800;
     }
-  .subtitle {
+    .subtitle {
       color: rgba(255, 255, 255, 0.8);
       font-size: 1rem;
       margin-bottom: 25px;
     }
-  .wheel-container {
+    .wheel-container {
       position: relative;
       width: 300px;
       height: 300px;
       margin: 0 auto 25px;
     }
-  .wheel {
+    .wheel {
       width: 100%;
       height: 100%;
       border-radius: 50%;
@@ -75,4 +75,127 @@
       position: relative;
       overflow: hidden;
       transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      background: conic-gradient(
+        #ff4757 0deg 60deg,     /* Bunk */
+        #2ed573 60deg 120deg,   /* Proxy */
+        #1e90ff 120deg 180deg,  /* Attend */
+        #ffa502 180deg 240deg,  /* Sleep */
+        #a4b0be 240deg 300deg,  /* Cancelled */
+        #ff6b81 300deg 360deg   /* Surprise Quiz */
+      );
+    }
+    /* Adding text inside segments requires a bit of complex positioning, 
+       so simple color segments represent the "fates" for this visual */
+
+    .pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 30px solid white;
+      z-index: 10;
+      filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.4));
+    }
+    
+    .spin-btn {
+      background: white;
+      color: #b21f1f;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      font-family: 'Poppins', sans-serif;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .spin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .spin-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    .spin-btn:disabled {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      color: white;
+      font-size: 0.85rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .color-box {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Lecture Ka Kismat 🎡</h1>
+    <p class="subtitle">Spin to find out your fate!</p>
+    
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel"></div>
+    </div>
+    
+    <button class="spin-btn" id="spin-btn">Spin</button>
+
+    <div class="legend">
+      <div class="legend-item"><div class="color-box" style="background:#ff4757"></div>Bunk</div>
+      <div class="legend-item"><div class="color-box" style="background:#2ed573"></div>Proxy</div>
+      <div class="legend-item"><div class="color-box" style="background:#1e90ff"></div>Attend</div>
+      <div class="legend-item"><div class="color-box" style="background:#ffa502"></div>Sleep</div>
+      <div class="legend-item"><div class="color-box" style="background:#a4b0be"></div>Cancelled</div>
+      <div class="legend-item"><div class="color-box" style="background:#ff6b81"></div>Quiz</div>
+    </div>
+  </div>
+
+  <script>
+    const wheel = document.getElementById('wheel');
+    const spinBtn = document.getElementById('spin-btn');
+    let currentRotation = 0;
+
+    spinBtn.addEventListener('click', () => {
+      // Disable button during spin
+      spinBtn.disabled = true;
+
+      // Spin anywhere between 5 to 10 full rotations (1800 to 3600 degrees) + a random offset
+      const randomDegree = Math.floor(Math.random() * 360) + 1800; 
+      currentRotation += randomDegree;
+      
+      wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+      // Re-enable button after animation completes (matches the 4s CSS transition)
+      setTimeout(() => {
+        spinBtn.disabled = false;
+      }, 4000); 
+    });
+  </script>
+</body>
+</html>
